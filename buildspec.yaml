@@ -7,10 +7,10 @@ phases:
       # Check AWS CLI Version        
       - echo "Checking AWS CLI Version..."
       - aws --version
-      # Login to ECR Registry 
-      - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin DOCKER_ID.dkr.ecr.REGION.amazonaws.com
-      #aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - $(aws ecr get-login --region ***-east-*)
+      - REPOSITORY_URI=864753716045.dkr.ecr.ap-south-2.amazonaws.com/awsrepository
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
       - echo Build started on `date`
