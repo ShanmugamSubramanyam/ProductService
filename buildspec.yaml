@@ -2,11 +2,14 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
+      # This Docker Image tag will have date, time and Codecommit version
+      - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+      # Check AWS CLI Version        
+      - echo "Checking AWS CLI Version..."
       - aws --version
-      - REPOSITORY_URI=864753716045.dkr.ecr.ap-south-2.amazonaws.com/awsrepository
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      # Login to ECR Registry 
+      - echo "Logging in to Amazon ECR..."
+      - $(aws ecr get-login --no-include-email --region us-east-1)
   build:
     commands:
       - echo Build started on `date`
