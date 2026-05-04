@@ -1,24 +1,26 @@
-// Source - https://stackoverflow.com/a/62554326
-// Posted by Piyush Agarwal
-// Retrieved 2026-05-04, License - CC BY-SA 4.0
-
 version: 0.2
+
 phases:
   install:
     runtime-versions:
-      java: corretto8
+      java: corretto17 # Use corretto8, corretto11, or corretto21 based on your project
+  
   pre_build:
     commands:
-    - echo In the pre_build phase...
+      - echo "Setting up Gradle permissions..."
+      - chmod +x gradlew
+      - echo "Logged in to $(date)"
+
   build:
     commands:
-    - echo Build started on `date`
+      - echo "Build started on $(date)"
+      - ./gradlew clean build # Runs tests and packages the application
+
   post_build:
     commands:
-    - echo Build completed on `date`
-    - mvn package
-    - mv target/bike-service-0.0.1-SNAPSHOT.war bike-service-0.0.1-SNAPSHOT.war
+      - echo "Build completed on $(date)"
+
 artifacts:
   files:
-  - bike-service-0.0.1-SNAPSHOT.war
-  - .ebextensions/**/*
+    - 'build/libs/*.jar' # Collects the generated executable jar
+  discard-paths: yes # Flattens the file structure in the output bucket
