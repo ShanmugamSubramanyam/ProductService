@@ -1,26 +1,26 @@
 version: 0.2
-
 phases:
-  install:
-    runtime-versions:
-      java: corretto17 # Use corretto8, corretto11, or corretto21 based on your project
-  
   pre_build:
     commands:
-      - echo "Setting up Gradle permissions..."
-      - chmod +x gradlew
-      - echo "Logged in to $(date)"
-
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login --no-include-email --region us-east-1
+      - REPOSITORY_URI=***********.dkr.ecr.***-east-*.amazonaws.com/awsrepository
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
-      - echo "Build started on $(date)"
-      - ./gradlew clean build # Runs tests and packages the application
-
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
-      - echo "Build completed on $(date)"
-
+      - echo Build completed
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing definitions file...
+      - printf '[{"name":"project-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > taskdefinition.json
 artifacts:
-  files:
-    - 'build/libs/*.jar' # Collects the generated executable jar
-  discard-paths: yes # Flattens the file structure in the output bucket
+    files: taskdefinition.json
