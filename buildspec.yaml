@@ -7,7 +7,7 @@ phases:
       # Check AWS CLI Version        
       - echo "Checking AWS CLI Version..."
       - aws --version
-      - $(aws ecr get-login --region ***-east-*)
+      - aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin 864753716045.dkr.ecr.ap-south-2.amazonaws.com
       - REPOSITORY_URI=864753716045.dkr.ecr.ap-south-2.amazonaws.com/awsrepository
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
