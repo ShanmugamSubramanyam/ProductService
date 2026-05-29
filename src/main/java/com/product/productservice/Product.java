@@ -1,7 +1,7 @@
 package com.product.productservice;
 
 import java.util.Objects;
-//Main class.
+//Main class code.
 public class Product {
 	private int id;
 	private String name;
