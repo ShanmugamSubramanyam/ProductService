@@ -1,7 +1,11 @@
 package com.product.productservice;
 
 import java.util.Objects;
+<<<<<<< HEAD
 //Product class.
+=======
+//Main class code.
+>>>>>>> origin
 public class Product {
 	private int id;
 	private String name;
