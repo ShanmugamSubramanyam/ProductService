@@ -21,7 +21,7 @@ public class ProductController {
 	@GetMapping("/")
 	public String getAllProduct() {
 
-		return "Welcome to AWS";
+		return "Welcome to AWS and ARGOCD";
 	}
 
 	@GetMapping(" /products/{id}")
